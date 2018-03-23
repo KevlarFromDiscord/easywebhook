@@ -6,9 +6,9 @@ This makes using webhooks for Discord alot Easier!
 **create()**  
 ```js
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
-const webhook = new EasyWebhook('Your Discord Bot Token', 'Your new Webhook Name', 'Your new Webhook Avatar');
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
-webhook.create(channel).then(r => {
+webhook.create('Discord Bot Token', 'Channel ID').then(r => {
   console.log(r)
 });
 
@@ -33,7 +33,7 @@ webhook.create(channel).then(r => {
 **send()**
 ```js
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
-const webhook = new EasyWebhook('Your Discord Bot Token', 'Your new Webhook Name', 'Your new Webhook Avatar');
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
 webhook.send(message, webhook_id, webhook_token, content).then(r => {
   console.log(r)
@@ -50,7 +50,7 @@ content = embed or a message
 **modify()**
 ```js
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
-const webhook = new EasyWebhook('Your Discord Bot Token', 'Your new Webhook Name', 'Your new Webhook Avatar');
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
 webhook.modify(webhook_id, webhook_token, name, avatar).then(r => {
   console.log(r)
@@ -67,7 +67,7 @@ avatar = new avatar
 **delete()**
 ```js
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
-const webhook = new EasyWebhook('Your Discord Bot Token', 'Your new Webhook Name', 'Your new Webhook Avatar');
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
 webhook.delete(webhook_id).then(r => {
   console.log(r)
@@ -81,7 +81,7 @@ webhook_id = webhook id
 **deleteWithToken()**
 ```js
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
-const webhook = new EasyWebhook('Your Discord Bot Token', 'Your new Webhook Name', 'Your new Webhook Avatar');
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
 webhook.deleteWithToken(webhook_id, webhook_token).then(r => {
   console.log(r)
