@@ -35,12 +35,11 @@ webhook.create('Discord Bot Token', 'Channel ID').then(r => {
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
 const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
-webhook.send(message, webhook_id, webhook_token, content).then(r => {
+webhook.send(webhook_id, webhook_token, content).then(r => {
   console.log(r)
 });
 
 /*
-message = the message event
 webhook_id = webhook id
 webhook_token = webhook token
 content = embed or a message
@@ -48,6 +47,22 @@ content = embed or a message
 ```
 
 **modify()**
+```js
+const EasyWebhook = require('easywebhook'); // Require the Package from NPM
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
+
+webhook.modify(webhook_id, webhook_token, name, avatar).then(r => {
+  console.log(r)
+});
+
+/*
+webhook_id = webhook id
+name = new name
+avatar = new avatar
+*/
+```
+
+**modifyWithToken()**
 ```js
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
 const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
@@ -92,3 +107,7 @@ webhook_id = webhook id
 webhook_token = webhook token
 */
 ```
+
+## Credits
+**Zelak#6169** - Helped me on Ratelimits  
+**ExtasyMonst4#0001** - Helped me too on Ratelimits
