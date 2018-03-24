@@ -1,8 +1,5 @@
 const snek = require('snekfetch');
 
-process.on('unhandledRejection', error => {
-  console.log(error.stack)
-});
 
 class EasyWebhook {
 	constructor(name, avatar) {
@@ -22,7 +19,7 @@ class EasyWebhook {
 	create(bot_token, channel) {
 		if (typeof channel !== 'string') throw Error('Channel must be an ID!');
 		if (typeof bot_token !== 'string') throw Error('You must supply a Bot Token!');
-		return new Promise((resolve, error) => {
+		return new Promise((resolve, reject) => {
 		
 			snek.post(`https://discordapp.com/api/channels/${channel}/webhooks`)
 				.set('Authorization', `Bot ${bot_token}`)
@@ -41,21 +38,27 @@ class EasyWebhook {
 	 
     send(webhook_id, webhook_token, content) {
 		if (typeof webhook_id !== 'string' || typeof webhook_token !== 'string') throw Error('Both Parameters (webhook_id webhook_token) must be a String!');
-        return new Promise((resolve, error) => {
+        return new Promise((resolve, reject) => {
             if (typeof content !== 'object' || !Array.isArray(content)) { 
                 snek.post(`https://discordapp.com/api/webhooks/${webhook_id}/${webhook_token}`)
                     .send({ content: content })
                     .then(response => {
-						if (response.headers['x-ratelimit-remaining'] === '0') {
-							return console.log('You are being ratelimited!');
-						} else {
+						if (response.headers['x-ratelimit-remaining'] !== '0') {
 							resolve(response);
+						} else {
+							return reject(Error('You are being rate limited!'));
 						}
-					})
+					}).catch(e => console.log(e.body.message))
             } else {
                 snek.post(`https://discordapp.com/api/webhooks/${webhook_id}/${webhook_token}`)
                 .send({ embeds: content })
-                .then(response => resolve(response))
+                .then(response => {
+					if (response.headers['x-ratelimit-remaining'] !== '0') {
+						resolve(response);
+					} else {
+						return reject(Error('You are being rate limited!'));
+					}
+				}).catch(e => console.log(e.body.message))
             }
         });
     }
@@ -63,15 +66,32 @@ class EasyWebhook {
 	/**
 	 * Modifies a Webhook
 	 * @param {string} webhook_id
-	 * @param {string} webhook_token
 	 * @param {string} name
 	 * @param {string} avatar
 	 * @returns {Promise<Object>}
 	 */
 	
-	modify(webhook_id, webhook_token, name, avatar) {
+	modify(webhook_id, name, avatar) {
+		if (typeof webhook_id !== 'string' || typeof name !== 'string' || typeof avatar !== 'string') throw Error('All Parameters must be a String!');
+		return new Promise((resolve, reject) => {
+			snek.patch(`https://discordapp.com/api/webhooks/${webhook_id}`)
+				.send({ name: name, avatar: avatar })
+				.then(response => resolve(response))
+		})
+	}
+	
+	/**
+	 * Modifies a Webhook with it's token
+	 * @param {string} webhook_id
+	 * @param {string} webhook_token
+	 * @param {string} name
+	 * @param {string} avatar
+	 * @returns {Promise<Object>}
+	 */
+	 
+	modifyWithToken(webhook_id, webhook_token, name, avatar) {
 		if (typeof webhook_id !== 'string' || typeof webhook_token !== 'string' || typeof name !== 'string' || typeof avatar !== 'string') throw Error('All Parameters must be a String!');
-		return new Promise((resolve, error) => {
+		return new Promise((resolve, reject) => {
 			snek.patch(`https://discordapp.com/api/webhooks/${webhook_id}/${webhook_token}`)
 				.send({ name: name, avatar: avatar })
 				.then(response => resolve(response))
@@ -86,7 +106,7 @@ class EasyWebhook {
 	
 	delete(webhook_id) {
 		if (typeof webhook_id !== 'string') throw Error('Parameter must be a String!');
-		return new Promise((resolve, error) => {
+		return new Promise((resolve, reject) => {
 			snek.delete(`https://discordapp.com/api/webhooks/${webhook_id}`)
 				.set('Authorization', `Bot ${this.token}`)
 				.then(response => resolve(response));
@@ -102,7 +122,7 @@ class EasyWebhook {
 	
 	deleteWithToken(webhook_id, webhook_token) {
 		if (typeof webhook_id !== 'string' || typeof webhook_token !== 'string') throw Error('Both Parameters must be a String!');
-		return new Promise((resolve, error) => {
+		return new Promise((resolve, reject) => {
 			snek.delete(`https://discordapp.com/api/webhooks/${webhook_id}/${webhook_token}`)
 				.then(response => resolve(response));
 		})
