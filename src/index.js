@@ -38,7 +38,8 @@ class EasyWebhook {
 	 
     send(webhook_id, webhook_token, content) {
 		if (typeof webhook_id !== 'string' || typeof webhook_token !== 'string') throw Error('Both Parameters (webhook_id webhook_token) must be a String!');
-        return new Promise((resolve, reject) => {
+        if (!content) throw Error('Cannot send an Empty Message!');	
+		return new Promise((resolve, reject) => {
             if (typeof content !== 'object' || !Array.isArray(content)) { 
                 snek.post(`https://discordapp.com/api/webhooks/${webhook_id}/${webhook_token}`)
                     .send({ content: content })
@@ -126,6 +127,40 @@ class EasyWebhook {
 			snek.delete(`https://discordapp.com/api/webhooks/${webhook_id}/${webhook_token}`)
 				.then(response => resolve(response));
 		})
+	}
+	
+	/**
+	 * Gets a User or Bot through their id
+	 * @param {string} bot_token
+	 * @param {string} user_id
+	 * @returns {Promise<Object|User>}
+	 */
+	
+	getUser(bot_token, user_id) {
+		return new Promise((resolve, reject) => {
+			if (user_id === '1') {
+				var user_obj = {
+					username: 'Clyde',
+					id: '1',
+					discriminator: '0000',
+					avatar: 'f78426a064bc9dd24847519259bc42af',
+					tag: 'Clyde#0000'
+				};
+				resolve(user_obj);
+			}
+			snek.get(`https://discordapp.com/api/users/${user_id}`)
+				.set('Authorization', `Bot ${bot_token}`)
+			.then(response => {
+				if (response.headers['x-ratelimit-remaining'] !== '0') {
+					var user_obj = JSON.parse(response.text);
+					user_obj['tag'] = `${user_obj.username}#${user_obj.discriminator}`
+				
+					resolve(user_obj);
+				} else {
+					return reject(Error('You are being rate limited!'));
+				}
+			}).catch(e => console.log(e.message));
+		});
 	}
 };
 
