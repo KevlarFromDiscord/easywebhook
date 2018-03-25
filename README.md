@@ -51,7 +51,7 @@ content = embed or a message
 const EasyWebhook = require('easywebhook'); // Require the Package from NPM
 const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
 
-webhook.modify(webhook_id, webhook_token, name, avatar).then(r => {
+webhook.modify(webhook_id, name, avatar).then(r => {
   console.log(r)
 });
 
