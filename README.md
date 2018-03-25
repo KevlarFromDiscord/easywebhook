@@ -108,6 +108,22 @@ webhook_token = webhook token
 */
 ```
 
+**getUser()**
+```js
+const EasyWebhook = require('easywebhook'); // Require the Package from NPM
+const webhook = new EasyWebhook('Your new Webhook Name', 'Your new Webhook Avatar');
+
+webhook.getUser(bot_token, userid/botid).then(r => {
+  console.log(r)
+});
+
+/*
+bot_token = your bot's token
+userid/botid = a user's id or bot id
+*/
+```
+
+
 ## Credits
 **Zelak#6169** - Helped me on Ratelimits  
 **ExtasyMonst4#0001** - Helped me too on Ratelimits
